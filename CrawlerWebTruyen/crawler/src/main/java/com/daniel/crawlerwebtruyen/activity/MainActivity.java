@@ -1,7 +1,9 @@
-package com.daniel.crawlerwebtruyen;
+package com.daniel.crawlerwebtruyen.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+
+import com.daniel.crawlerwebtruyen.R;
 
 public class MainActivity extends ActionBarActivity {
 

@@ -15,6 +15,9 @@ public class Book implements Serializable {
     public static class Fields {
         public static final String ID = "id";
         public static final String NAME = "name";
+        public static final String AUTHOR = "author";
+        public static final String TYPE = "type";
+        public static final String STATUS = "status";
         public static final String OVERVIEW = "overview";
     }
 
@@ -23,6 +26,15 @@ public class Book implements Serializable {
 
     @DatabaseField(columnName = Fields.NAME)
     private String mName;
+
+    @DatabaseField(columnName = Fields.AUTHOR)
+    private String mAuthor;
+
+    @DatabaseField(columnName = Fields.TYPE)
+    private String mType;
+
+    @DatabaseField(columnName = Fields.STATUS)
+    private String mStatus;
 
     @DatabaseField(columnName = Fields.OVERVIEW)
     private String mOverview;
@@ -43,6 +55,30 @@ public class Book implements Serializable {
         mName = name;
     }
 
+    public String getAuthor() {
+        return mAuthor;
+    }
+
+    public void setAuthor(String author) {
+        mAuthor = author;
+    }
+
+    public String getType() {
+        return mType;
+    }
+
+    public void setType(String type) {
+        mType = type;
+    }
+
+    public String getStatus() {
+        return mStatus;
+    }
+
+    public void setStatus(String status) {
+        mStatus = status;
+    }
+
     public String getOverview() {
         return mOverview;
     }
@@ -52,6 +88,6 @@ public class Book implements Serializable {
     }
 
     public String toString() {
-        return "[" + mId + " -- " + mName + " -- " + mOverview + "]";
+        return "[" + mId + "--" + mName + "--" + mAuthor + "--" + mType + "--" + mStatus + "--" + mOverview + "]";
     }
 }

@@ -1,5 +1,6 @@
 package com.daniel.crawlerwebtruyen.activity;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -24,13 +25,12 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
         mBook = new Book();
-        getDocument();
-        getDetailOfBook();
+        new CrawlBookTask().execute();
     }
 
     private void getDocument() {
         try {
-            mDocument = Jsoup.connect(BOOK_LINK).get();
+            mDocument = Jsoup.connect(BOOK_LINK).timeout(100000).get();
         } catch (Exception e) {
             Log.e(TAG, "getDocument", e);
             getDocument();
@@ -39,5 +39,18 @@ public class MainActivity extends ActionBarActivity {
 
     private void getDetailOfBook() {
 
+    }
+
+    private class CrawlBookTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... unusedParams) {
+            getDocument();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void unusedParam) {
+            getDetailOfBook();
+        }
     }
 }

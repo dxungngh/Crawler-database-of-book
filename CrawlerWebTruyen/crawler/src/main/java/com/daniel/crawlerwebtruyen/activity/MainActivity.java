@@ -17,6 +17,8 @@ public class MainActivity extends ActionBarActivity {
     private final String TAG = MainActivity.class.getSimpleName();
     private final String BOOK_LINK = "http://webtruyen.com/buong-tay-toi-khong-lay-chong/";
     private final int TIMEOUT = 100000;
+    private final String USER_AGENT = "Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6";
+    private final String REFERRER = "http://www.google.com";
 
     private Book mBook;
     private Document mDocument;
@@ -32,7 +34,12 @@ public class MainActivity extends ActionBarActivity {
 
     private void getDocument() {
         try {
-            mDocument = Jsoup.connect(BOOK_LINK).timeout(TIMEOUT).get();
+            mDocument = Jsoup
+                .connect(BOOK_LINK)
+                .userAgent(USER_AGENT)
+                .referrer(REFERRER)
+                .timeout(TIMEOUT)
+                .get();
         } catch (Exception e) {
             Log.e(TAG, "getDocument", e);
             getDocument();

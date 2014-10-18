@@ -6,7 +6,10 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 
 import com.daniel.crawlerwebtruyen.R;
+import com.daniel.crawlerwebtruyen.database.datasource.BookDataSource;
+import com.daniel.crawlerwebtruyen.database.datasource.ChapterDataSource;
 import com.daniel.crawlerwebtruyen.database.table.Book;
+import com.daniel.crawlerwebtruyen.database.table.Chapter;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -40,7 +43,11 @@ public class MainActivity extends ActionBarActivity {
             Elements tdElements = rowElement.select("td");
             String name = tdElements.get(3).text();
             String link = tdElements.get(3).select("a").first().attr("href");
-            Log.i(TAG, name + " -- " + link);
+
+            Chapter chapter = new Chapter();
+            chapter.setName(name);
+            chapter.setLink(link);
+            getContentOfChapter(chapter);
         } catch (Exception e) {
             Log.e(TAG, "getChapterFromRow", e);
         }
@@ -73,6 +80,23 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
+    private void getContentOfChapter(Chapter chapter) {
+        try {
+            Document chapterDocument = Jsoup.connect(chapter.getLink())
+                .userAgent(USER_AGENT)
+                .referrer(REFERRER)
+                .timeout(TIMEOUT)
+                .get();
+            String content = chapterDocument.select("#detailcontent").first().html();
+            chapter.setContent(content);
+            ChapterDataSource.createChapter(this, chapter);
+
+            Log.i(TAG, content.toString());
+        } catch (Exception e) {
+            Log.e(TAG, "getContentOfChapter", e);
+        }
+    }
+
     private void getDocument() {
         try {
             mDocument = Jsoup
@@ -93,6 +117,7 @@ public class MainActivity extends ActionBarActivity {
         getListOfChapters();
 
         Log.i(TAG, mBook.toString());
+        BookDataSource.createBook(this, mBook);
     }
 
     private void getInformationOfBook() {

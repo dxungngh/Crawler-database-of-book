@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.daniel.crawlerwebtruyen.database.table.Book;
+import com.daniel.crawlerwebtruyen.database.table.Chapter;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.support.ConnectionSource;
@@ -13,6 +14,7 @@ import com.j256.ormlite.table.TableUtils;
 
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     private Dao<Book, Integer> mBookDao = null;
+    private Dao<Chapter, Integer> mChapterDao = null;
 
     private static final String TAG = DatabaseHelper.class.getSimpleName();
 
@@ -27,6 +29,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     public void close() {
         super.close();
         mBookDao = null;
+        mChapterDao = null;
     }
 
     @Override
@@ -45,6 +48,13 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, ConnectionSource connectionSource, int oldVersion,
                           int newVersion) {
+        try {
+            TableUtils.dropTable(connectionSource, Book.class, true);
+            TableUtils.dropTable(connectionSource, Chapter.class, true);
+            onCreate(db);
+        } catch (Exception e) {
+            Log.e(TAG, "onUpgrade", e);
+        }
     }
 
     public Dao<Book, Integer> getBookDao() {
@@ -56,5 +66,16 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             }
         }
         return mBookDao;
+    }
+
+    public Dao<Chapter, Integer> getChapterDao() {
+        if (null == mChapterDao) {
+            try {
+                mChapterDao = getDao(Chapter.class);
+            } catch (java.sql.SQLException e) {
+                Log.e(TAG, "getChapterDao", e);
+            }
+        }
+        return mChapterDao;
     }
 }

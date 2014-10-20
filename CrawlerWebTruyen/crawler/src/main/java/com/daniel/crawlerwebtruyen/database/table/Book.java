@@ -21,7 +21,7 @@ public class Book implements Serializable {
         public static final String OVERVIEW = "overview";
     }
 
-    @DatabaseField(id = true, canBeNull = false, columnName = Fields.ID)
+    @DatabaseField(allowGeneratedIdInsert = true, canBeNull = false, columnName = Fields.ID, generatedId = true)
     private long mId;
 
     @DatabaseField(columnName = Fields.NAME)

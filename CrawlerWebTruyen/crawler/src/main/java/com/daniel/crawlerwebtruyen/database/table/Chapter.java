@@ -19,7 +19,7 @@ public class Chapter implements Serializable {
         public static final String NAME = "name";
     }
 
-    @DatabaseField(id = true, canBeNull = false, columnName = Fields.ID)
+    @DatabaseField(allowGeneratedIdInsert = true, canBeNull = false, columnName = Fields.ID, generatedId = true)
     private long mId;
 
     @DatabaseField(columnName = Fields.CONTENT)

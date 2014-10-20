@@ -55,7 +55,7 @@ public class MainActivity extends ActionBarActivity {
 
     private void getChaptersOfPage(String pageLink) {
         try {
-            Log.i(TAG, pageLink);
+//            Log.i(TAG, pageLink);
             Document pageDocument = Jsoup.connect(pageLink)
                 .userAgent(USER_AGENT)
                 .referrer(REFERRER)
@@ -91,7 +91,7 @@ public class MainActivity extends ActionBarActivity {
             chapter.setContent(content);
             ChapterDataSource.createChapter(this, chapter);
 
-            Log.i(TAG, content.toString());
+//            Log.i(TAG, content.toString());
         } catch (Exception e) {
             Log.e(TAG, "getContentOfChapter", e);
         }
@@ -116,7 +116,7 @@ public class MainActivity extends ActionBarActivity {
         getOverviewOfBook();
         getListOfChapters();
 
-        Log.i(TAG, mBook.toString());
+//        Log.i(TAG, mBook.toString());
         BookDataSource.createBook(this, mBook);
     }
 

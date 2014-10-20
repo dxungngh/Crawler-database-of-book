@@ -3,6 +3,7 @@ package com.daniel.crawlerwebtruyen.database;
 import android.content.Context;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Environment;
 import android.util.Log;
 
 import com.daniel.crawlerwebtruyen.database.table.Book;
@@ -18,8 +19,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
     private static final String TAG = DatabaseHelper.class.getSimpleName();
 
-    private static final String DATABASE_NAME = "database.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final String DATABASE_NAME = Environment.getExternalStorageDirectory() + "/mydatabase.db";
+    private static final int DATABASE_VERSION = 3;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -37,6 +38,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         try {
             Log.i(TAG, "create database");
             TableUtils.createTable(connectionSource, Book.class);
+            TableUtils.createTable(connectionSource, Chapter.class);
         } catch (SQLException e) {
             Log.e(TAG, "onCreate", e);
             throw new RuntimeException(e);

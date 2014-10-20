@@ -89,6 +89,9 @@ public class MainActivity extends ActionBarActivity {
                 .timeout(TIMEOUT)
                 .get();
             String content = chapterDocument.select("#detailcontent").first().html();
+            content.replace("http://webtruyen.com", "");
+            content.replace("webtruyen.com", "");
+            content.replace("webtruyen", "");
             chapter.setContent(content);
             ChapterDataSource.createChapter(this, chapter);
 

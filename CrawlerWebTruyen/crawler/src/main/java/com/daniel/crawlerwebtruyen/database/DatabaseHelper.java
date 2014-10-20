@@ -13,14 +13,16 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
+import java.io.File;
+
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     private Dao<Book, Integer> mBookDao = null;
     private Dao<Chapter, Integer> mChapterDao = null;
 
     private static final String TAG = DatabaseHelper.class.getSimpleName();
 
-    private static final String DATABASE_NAME = "mydatabase.db";
-    private static final int DATABASE_VERSION = 5;
+    private static final String DATABASE_NAME = Environment.getExternalStorageState() + File.separator + "mydatabase.db";
+    private static final int DATABASE_VERSION = 6;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

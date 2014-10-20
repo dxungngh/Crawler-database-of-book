@@ -23,11 +23,12 @@ public class MainActivity extends ActionBarActivity {
     private final int TIMEOUT = 100000;
     private final String USER_AGENT = "Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6";
     private final String REFERRER = "http://www.google.com";
-    private final String PAGE_LINK = "http://webtruyen.com/story/Paging_listbook/5588/";
 
     private Book mBook;
+    private int mBookId;
     private Document mDocument;
     private boolean mIsDone = false;
+    private String mPageLink = "http://webtruyen.com/story/Paging_listbook/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,6 +121,15 @@ public class MainActivity extends ActionBarActivity {
         BookDataSource.createBook(this, mBook);
     }
 
+    private void getIdOfBook() {
+        Element inputElement = mDocument.select(".input_page").first().select("input").get(1);
+        String onclickValue = inputElement.attr("onclick");
+        onclickValue = onclickValue.replace("paginglistbook(", "");
+        onclickValue = onclickValue.replace(", $('#page').val())", "");
+        mBookId = Integer.parseInt(onclickValue.trim());
+        Log.i(TAG, "book id: " + mBookId);
+    }
+
     private void getInformationOfBook() {
         Element informationElement = mDocument.select(".contdetail").first();
 
@@ -140,8 +150,10 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void getListOfChapters() {
+        getIdOfBook();
+        mPageLink = mPageLink + mBookId + "/";
         for (int i = 0; i < 1000; i++) {
-            String pageLink = PAGE_LINK + i;
+            String pageLink = mPageLink + i;
             getChaptersOfPage(pageLink);
             if (mIsDone) {
                 break;

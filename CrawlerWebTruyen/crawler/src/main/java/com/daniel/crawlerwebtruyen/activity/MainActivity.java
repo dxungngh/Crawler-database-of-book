@@ -19,7 +19,7 @@ import org.jsoup.select.Elements;
 public class MainActivity extends ActionBarActivity {
 
     private final String TAG = MainActivity.class.getSimpleName();
-    private final String BOOK_LINK = "http://webtruyen.com/buong-tay-toi-khong-lay-chong/";
+    private final String BOOK_LINK = "http://webtruyen.com/365-ngay-hon-nhan/";
     private final int TIMEOUT = 100000;
     private final String USER_AGENT = "Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6";
     private final String REFERRER = "http://www.google.com";
@@ -42,7 +42,7 @@ public class MainActivity extends ActionBarActivity {
     private void getChapterFromRow(Element rowElement) {
         try {
             Elements tdElements = rowElement.select("td");
-            String name = tdElements.get(3).text();
+            String name = tdElements.get(3).select("a").first().attr("title");
             String link = tdElements.get(3).select("a").first().attr("href");
 
             Chapter chapter = new Chapter();
@@ -88,7 +88,9 @@ public class MainActivity extends ActionBarActivity {
                 .referrer(REFERRER)
                 .timeout(TIMEOUT)
                 .get();
-            String content = chapterDocument.select("#detailcontent").first().html();
+            Element contentElement = chapterDocument.select("#detailcontent").first();
+            contentElement.select("div[align=left]").first().remove();
+            String content = contentElement.html();
             content.replace("http://webtruyen.com", "");
             content.replace("webtruyen.com", "");
             content.replace("webtruyen", "");
@@ -122,6 +124,7 @@ public class MainActivity extends ActionBarActivity {
 
 //        Log.i(TAG, mBook.toString());
         BookDataSource.createBook(this, mBook);
+        Log.i(TAG, "Crawling is done!");
     }
 
     private void getIdOfBook() {
@@ -155,7 +158,7 @@ public class MainActivity extends ActionBarActivity {
     private void getListOfChapters() {
         getIdOfBook();
         mPageLink = mPageLink + mBookId + "/";
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 1; i < 1000; i++) {
             String pageLink = mPageLink + i;
             getChaptersOfPage(pageLink);
             if (mIsDone) {

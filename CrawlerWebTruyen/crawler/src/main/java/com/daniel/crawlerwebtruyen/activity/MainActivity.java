@@ -4,8 +4,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.daniel.crawlerwebtruyen.R;
+import com.daniel.crawlerwebtruyen.database.DatabaseHelper;
 import com.daniel.crawlerwebtruyen.database.datasource.BookDataSource;
 import com.daniel.crawlerwebtruyen.database.datasource.ChapterDataSource;
 import com.daniel.crawlerwebtruyen.database.table.Book;
@@ -16,10 +18,12 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.File;
+
 public class MainActivity extends ActionBarActivity {
 
     private final String TAG = MainActivity.class.getSimpleName();
-    private final String BOOK_LINK = "http://webtruyen.com/365-ngay-hon-nhan/";
+    private final String BOOK_LINK = "http://webtruyen.com/khuynh-thanh-chi-loan/";
     private final int TIMEOUT = 100000;
     private final String USER_AGENT = "Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6";
     private final String REFERRER = "http://www.google.com";
@@ -29,11 +33,15 @@ public class MainActivity extends ActionBarActivity {
     private Document mDocument;
     private boolean mIsDone = false;
     private String mPageLink = "http://webtruyen.com/story/Paging_listbook/";
+    private TextView mTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mTextView = (TextView) findViewById(R.id.main_text);
+
+        removeOldDatabase();
 
         mBook = new Book();
         new CrawlBookTask().execute();
@@ -56,12 +64,12 @@ public class MainActivity extends ActionBarActivity {
 
     private void getChaptersOfPage(String pageLink) {
         try {
-//            Log.i(TAG, pageLink);
+            Log.i(TAG, pageLink);
             Document pageDocument = Jsoup.connect(pageLink)
-                .userAgent(USER_AGENT)
-                .referrer(REFERRER)
-                .timeout(TIMEOUT)
-                .get();
+                    .userAgent(USER_AGENT)
+                    .referrer(REFERRER)
+                    .timeout(TIMEOUT)
+                    .get();
             if (pageDocument == null) {
                 mIsDone = true;
                 return;
@@ -84,10 +92,10 @@ public class MainActivity extends ActionBarActivity {
     private void getContentOfChapter(Chapter chapter) {
         try {
             Document chapterDocument = Jsoup.connect(chapter.getLink())
-                .userAgent(USER_AGENT)
-                .referrer(REFERRER)
-                .timeout(TIMEOUT)
-                .get();
+                    .userAgent(USER_AGENT)
+                    .referrer(REFERRER)
+                    .timeout(TIMEOUT)
+                    .get();
             Element contentElement = chapterDocument.select("#detailcontent").first();
             contentElement.select("div[align=left]").first().remove();
             String content = contentElement.html();
@@ -106,11 +114,11 @@ public class MainActivity extends ActionBarActivity {
     private void getDocument() {
         try {
             mDocument = Jsoup
-                .connect(BOOK_LINK)
-                .userAgent(USER_AGENT)
-                .referrer(REFERRER)
-                .timeout(TIMEOUT)
-                .get();
+                    .connect(BOOK_LINK)
+                    .userAgent(USER_AGENT)
+                    .referrer(REFERRER)
+                    .timeout(TIMEOUT)
+                    .get();
         } catch (Exception e) {
             Log.e(TAG, "getDocument", e);
             getDocument();
@@ -172,6 +180,13 @@ public class MainActivity extends ActionBarActivity {
         mBook.setOverview(element.html());
     }
 
+    private void removeOldDatabase() {
+        File file = new File(DatabaseHelper.DATABASE_NAME);
+        if (file.exists()) {
+            file.delete();
+        }
+    }
+
     private class CrawlBookTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... unusedParams) {
@@ -182,6 +197,7 @@ public class MainActivity extends ActionBarActivity {
 
         @Override
         protected void onPostExecute(Void unusedParam) {
+            mTextView.setText("Crawling is done!");
         }
     }
 }
